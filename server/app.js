@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { connectMongo } from './utils/connectDB.js';
+import { validationOfBody } from './utils/middleware.js';
 
 const app = express();
 app.use(express.json());
@@ -18,9 +19,7 @@ const db = await connectMongo({
 
 app.get('/api/launchers', async (req,res) => {
     try{
-        
         const launchers = await db.collection('Launcher').find().toArray();
-
         if(launchers.length === 0) return res.status(200).json({launchers: []})
         return res.status(200).json({launchers})
     } catch(e){
@@ -44,11 +43,8 @@ app.get('/api/launchers/:id', async (req,res) => {
 })
 
 let count = 0
-app.post('/api/launchers', async (req,res) => {
-    const {name, rocketType, latitude, longitude, city} = req.body;
-    console.log(req.body);
-    
-    
+app.post('/api/launchers', validationOfBody, async (req,res) => {
+    const {name, rocketType, latitude, longitude, city} = req.body;    
     try{
         count += 1
         const result = await db.collection('Launcher').insertOne({
@@ -68,11 +64,8 @@ app.post('/api/launchers', async (req,res) => {
 
 app.delete('/api/launchers/:id', async (req,res) => {
     const {id} = req.params;
-    console.log(id);
-    
     try{
         const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
-        console.log(find);
         
         if(find.length > 0){
             const result = await db.collection('Launcher').deleteOne({id: Number(id)})
