@@ -14,7 +14,7 @@ const db = await connectMongo({
     uri : process.env.URI,
     name : process.env.DB_NAME
 })
-console.log(db);
+
 
 
 
@@ -23,8 +23,7 @@ app.get('/api/launchers', async (req,res) => {
     try{
         
         const launchers = await db.collection('Launcher').find().toArray();
-        console.log(launchers);
-        
+
         if(launchers.length === 0) return res.status(200).json({launchers: []})
         return res.status(200).json({launchers})
     } catch(e){
@@ -38,7 +37,8 @@ app.get('/api/launchers', async (req,res) => {
 app.get('/api/launchers/:id', async (req,res) => {
     const {id} = req.params;
     try {
-        const launcher = await db.collection('Launcher').find({id : id}).toArray()
+        const launcher = await db.collection('Launcher').find({id : Number(id)}).toArray()
+        
         if(launcher.length === 0) return res.status(400).json({error: "The ID was not found"})
         return res.status(200).json({launcher: launcher[0]})
     } catch(e){
@@ -46,7 +46,27 @@ app.get('/api/launchers/:id', async (req,res) => {
     }
 })
 
-
+let count = 0
+app.post('/api/launchers', async (req,res) => {
+    const {name, rocketType, latitude, longitude, city} = req.body;
+    console.log(req.body);
+    
+    
+    try{
+        count += 1
+        const result = await db.collection('Launcher').insertOne({
+            id: count,
+            city,
+            rocketType,
+            latitude,
+            longitude,
+            name
+        })
+        res.status(200).json({id : result.insertedId})
+    } catch(e){
+        res.status(500).json({message:  "The server is not responding, please try later.", error: e.message})
+    }
+})
 
 
 
