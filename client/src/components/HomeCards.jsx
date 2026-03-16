@@ -10,10 +10,8 @@ export default function HomeCards({item}) {
 
     function goToDetails(){
         addLauncher(item)
-        console.log(r);
-        
-        
         navigate('/louncher-details')
+        
     }
 
   return (

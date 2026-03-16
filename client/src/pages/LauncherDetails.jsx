@@ -1,16 +1,19 @@
-import React from 'react'
+
 import { useLauncher } from '../utils/zustand'
 
 export default function LauncherDetails() {
 
    
     const launcher = useLauncher((state) => state.launcher)
-    function check(){
-    onsole.log(launcher);
-    }
-    
+
     
   return (
-    <div><button onClick={check}>check</button></div>
+    <div>
+        <p>name: {launcher.name}</p>
+        <p>rocketType: {launcher.rocketType}</p>
+        <p>latitude: {launcher.latitude}</p>
+        <p>longitude: {launcher.longitude}</p>
+        <p>city: {launcher.city}</p>
+    </div>
   )
 }
