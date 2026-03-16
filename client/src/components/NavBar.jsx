@@ -1,12 +1,17 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLauncher } from '../utils/zustand'
 
 export default function NavBar() {
+    const removeLauncher = useLauncher((state) => state.removeLauncher)
+
     const navigate = useNavigate() 
     function toHome(){
+        removeLauncher()
         navigate('/')
     }
     function toadd(){
+        removeLauncher()
         navigate('/Add-Launcher')
     }
   return (

@@ -4,13 +4,16 @@ import { useLauncher } from "../utils/zustand"
 export default function HomeCards({item}) {
 
     const addLauncher = useLauncher((state) =>state.addLauncher)
+    const r = useLauncher((state) => state.launcher)
+
     const navigate = useNavigate()
 
     function goToDetails(){
-        console.log(item);
-        
         addLauncher(item)
-        navigate('/Launchr-Details')
+        console.log(r);
+        
+        
+        navigate('/louncher-details')
     }
 
   return (

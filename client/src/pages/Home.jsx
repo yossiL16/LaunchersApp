@@ -18,11 +18,7 @@ export default function Home() {
                 alert("There is a problem with the server", respons.status)
             }
             const result = await respons.json()
-            console.log(result);
-            
             const filterData = serchLaunchers(result.launchers, city, rocketType)
-            console.log(filterData);
-            
             setData(filterData)
         } catch(e){
             alert(result.error)
