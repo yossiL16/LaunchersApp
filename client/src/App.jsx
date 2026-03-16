@@ -3,16 +3,21 @@ import './App.css'
 import LauncherDetails from "./pages/launcherDetails"
 import Home from "./pages/Home"
 import AddLauncher from "./pages/AddLauncher"
+import NavBar from "./components/NavBar"
 
 function App() {
-  return (
+  return (<>
+    
     <BrowserRouter>
+    <NavBar />
       <Routes>
+
         <Route path="/" element={<Home />}/>
         <Route path="/Add-Launcher" element={<AddLauncher />} />
         <Route path="/Launchr-Details" element={<LauncherDetails ></LauncherDetails>}/>
       </Routes>
     </BrowserRouter>
+    </>
   )
 }
 

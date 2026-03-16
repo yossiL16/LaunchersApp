@@ -34,6 +34,7 @@ export default function Home() {
     }, [city,rocketType])
   return (
     <div>
+        <h3>serch launchers</h3>
         <div>
             <label>City: </label>
             <input onChange={e => setCity(e.target.value)} type="text" placeholder='Serch by City' value={city}/>

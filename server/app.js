@@ -43,8 +43,13 @@ app.get('/api/launchers/:id', async (req,res) => {
 })
 
 let count = 0
-app.post('/api/launchers', validationOfBody, async (req,res) => {
-    const {name, rocketType, latitude, longitude, city} = req.body;    
+app.post('/api/launchers', validationOfBody,async (req,res) => {
+    const {name, rocketType, city} = req.body;
+    const latitude = Number(req.body.latitude)    
+    const longitude = Number(req.body.longitude)
+    
+       
+     
     try{
         count += 1
         const result = await db.collection('Launcher').insertOne({
