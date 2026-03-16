@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 
-const port = process.env.port
+const port = process.env.PORT
 
 const db = connectMongo({
     uri : process.env.URI,
@@ -16,19 +16,38 @@ const db = connectMongo({
 })
 
 
-app.get('/', (req,res) => {
-    console.log("hello");
-    console.log(uri);
-    console.log(name);
+
+
+app.get('/api/launchers', async (req,res) => {
+    try{
+        
+        const launchers = await db.collection('Launcher').find().toArray();
+        console.log(launchers);
+        
+        if(launchers.length === 0) return res.status(200).json({launchers: []})
+        return res.status(200).json({launchers})
+    } catch(e){
+        res.status(500).json({message: "The server is not responding, please try later.",
+                error: e.message
+        })
+    }
+});
+
+
+app.get('/api/launchers/:id', async (req,res) => {
+    const {id} = req.params;
+    console.log(id);
     
-    
-    res.send("hello")
+    try {
+        const launcher = await db.collection('Launcher').find({id : id}).toArray()
+        if(launcher.length === 0) return res.status(400).json({error: "The ID was not found"})
+        return res.status(200).json({launcher: launcher[0]})
+    } catch(e){
+        res.status(500).json({error: e.message, message: "The server is not responding, please try later."})
+    }
 })
 
 
-app.get('/api/launchers', (req,res) => {
-
-})
 
 
 
