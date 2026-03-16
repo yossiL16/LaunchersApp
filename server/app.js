@@ -10,10 +10,11 @@ app.use(cors());
 
 const port = process.env.PORT
 
-const db = connectMongo({
+const db = await connectMongo({
     uri : process.env.URI,
     name : process.env.DB_NAME
 })
+console.log(db);
 
 
 
@@ -36,8 +37,6 @@ app.get('/api/launchers', async (req,res) => {
 
 app.get('/api/launchers/:id', async (req,res) => {
     const {id} = req.params;
-    console.log(id);
-    
     try {
         const launcher = await db.collection('Launcher').find({id : id}).toArray()
         if(launcher.length === 0) return res.status(400).json({error: "The ID was not found"})
