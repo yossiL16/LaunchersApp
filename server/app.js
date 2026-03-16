@@ -16,9 +16,6 @@ const db = await connectMongo({
 })
 
 
-
-
-
 app.get('/api/launchers', async (req,res) => {
     try{
         
@@ -63,6 +60,28 @@ app.post('/api/launchers', async (req,res) => {
             name
         })
         res.status(200).json({id : result.insertedId})
+    } catch(e){
+        res.status(500).json({message:  "The server is not responding, please try later.", error: e.message})
+    }
+})
+
+
+app.delete('/api/launchers/:id', async (req,res) => {
+    const {id} = req.params;
+    console.log(id);
+    
+    try{
+        const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
+        console.log(find);
+        
+        if(find.length > 0){
+            const result = await db.collection('Launcher').deleteOne({id: Number(id)})
+            console.log(result);
+            
+            return res.status(200).json({message: "The deletion was successful."})
+        } else{
+            return res.status(400).json({error: "The ID was not found"})
+        }
     } catch(e){
         res.status(500).json({message:  "The server is not responding, please try later.", error: e.message})
     }
