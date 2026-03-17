@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import { connectMongo } from './utils/connectDB.js';
 import { validationOfBody } from './utils/middleware.js';
+import { createToken, tokenVerify } from './utils/jwt.js';
 
 const app = express();
 app.use(express.json());
@@ -88,13 +89,13 @@ app.post('/api/auth/register/create', async (req,res)=> {
     const {username, password, email, type_user} = req.body;
     try {
         newId += 1;
-         const result = await db.collection('Launcher').insertOne({
+         const result = await db.collection('users').insertOne({
             id:newId,
             username,
             password, 
             email, 
             type_user,
-            last_login: new Date().toISOString()
+            last_login: null
          })
          res.status(200).json({id : result.insertedId})
     } catch(e){
@@ -112,12 +113,12 @@ app.put('/api/auth/register/update/:id', async (req,res) => {
     if(email){queries.email = email}
     if(type_user)queries.type_user = type_user
     try{
-        const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
+        const find = await db.collection('users').find({id : Number(id)}).toArray();
         if(find.length === 0){
             return res.status(400).json({message: "The ID was not found"})
         } 
-        const result = await db.collection('Launcher').updateOne(
-            {id:id},
+        const result = await db.collection('users').updateOne(
+            {id:Number(id)},
             {$set: queries}
             )
         res.status(200).json({message: "The user has been updated", 
@@ -132,11 +133,11 @@ app.put('/api/auth/register/update/:id', async (req,res) => {
 app.delete('/api/auth/register/delete/:id', async (req,res) => {
     const {id} = req.params;
     try{
-        const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
+        const find = await db.collection('users').find({id : Number(id)}).toArray();
         if(find.length === 0){
             return res.status(400).json({message: "The ID was not found"})
         }
-        await db.collection('Launcher').deleteOne({id:id})
+        await db.collection('users').deleteOne({id:Number(id)})
         res.status(200).json({message: "User deleted successfully"})
     } catch(e){
         res.status(500).json({message: e.message})
@@ -145,8 +146,44 @@ app.delete('/api/auth/register/delete/:id', async (req,res) => {
 
 
 app.post('/api/auth/login', async (req,res) => {
-    
+    const {username, password} = req.body
+    try {
+        const find = await db.collection('users').find({username,password }).toArray();
+        if(find.length === 0) return res.status(400).json({message: 'The token was not found'})
+        
+        const result = await db.collection('users').updateOne(
+        {username:username},
+        {$set: {last_login: new Date().toISOString()}}
+        )
+        const find2 = await db.collection('users').find({username,password }).toArray();
+        const user = find2[0]
+        const token = createToken(user)
+        res.status(200).json({message:'Login successful.',
+            token, user
+        })
+    } catch(e){
+        res.status(500).json({message:e.message})
+    }
 })
+
+
+app.get('/api/auth/getUser', async (req,res) => {
+    const user = req.user
+    res.status(200).json({user})
+})
+
+app.get('/api/users', async (req,res) => {
+    try{
+        const users = await db.collection('users').find().toArray();
+        if(users.length === 0) return res.status(200).json({users: []})
+        return res.status(200).json({users})
+    } catch(e){
+        res.status(500).json({message: "The server is not responding, please try later.",
+                error: e.message
+        })
+}
+});
+
 
 
 
