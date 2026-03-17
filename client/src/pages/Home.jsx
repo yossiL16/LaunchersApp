@@ -12,7 +12,6 @@ export default function Home() {
     
     const token = localStorage.getItem('token')
     
-
     async function getData(){
         try {
             const respons = await fetch('http://localhost:3000/api/launchers',{

@@ -169,7 +169,7 @@ app.post('/api/auth/login', async (req,res) => {
 
 app.get('/api/auth/getUser',tokenVerify, async (req,res) => {
     const user = req.user
-    res.status(200).json(user)
+    res.status(200).json({user})
 })
 
 app.get('/api/users',tokenVerify, async (req,res) => {

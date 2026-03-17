@@ -30,7 +30,7 @@ export default function Login() {
             })
             if(resUser.ok){
                 const user = await resUser.json()
-                localStorage.setItem('user', user)
+                localStorage.setItem('user', JSON.stringify(user))
             }
             navigate('/home')
         } catch(e){
