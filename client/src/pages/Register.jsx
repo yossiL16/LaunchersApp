@@ -14,6 +14,8 @@ export default function Register() {
     const [userTypeUp, setUserTypeUp] = useState('')
     const [id,setId] = useState('')
 
+    const [delId, setDelId] = useState('')
+
     const token = localStorage.getItem('token')
 
     async function createUser(){
@@ -64,12 +66,29 @@ export default function Register() {
             });
             console.log(respons);
             if(respons.ok){
-                alert('update secssus')
+                alert('The update was successful.')
                 setUsernameUp('')
                 setPasswordUp('')
                 setEmailUp('')
                 setUserTypeUp('')
                 setId('')
+            }
+        } catch(e){
+            alert(e.message)
+        }
+    }
+
+    async function deleteUser(){
+        try{
+            const respons = await fetch(`http://localhost:3000/api/auth/register/delete/${delId}`,{
+                method:'delete',
+                headers: {
+                    authorization: 'Bearer ' + token,
+                },
+            });
+            if(respons.ok){
+                alert('The deletion was successful.')
+                setDelId('')
             }
         } catch(e){
             alert(e.message)
@@ -112,11 +131,11 @@ export default function Register() {
 
             <div>
                 <label>Select an ID: </label>
-                <input type="number" onChange={e => setId(e.target.value)}/>
+                <input type="number" onChange={e => setId(e.target.value)} value={id}/>
             </div>
             <br />
 
-                            <label>user name: </label>
+                <label>user name: </label>
                 <input type="text" onChange={e => setUsernameUp(e.target.value)} value={usernameUp}/>
             </div>
 
@@ -136,6 +155,17 @@ export default function Register() {
             </div>
             <div>
                 <button onClick={updateUser}>Update</button>
+            </div>
+
+            <hr />
+
+            <div>
+                <h2>Delete User:</h2>
+                <div>
+                    <label>select ID: </label>
+                    <input type="number" onChange={e => setDelId(e.target.value)} value={delId}/>
+                </div>
+                <button onClick={deleteUser}>Delete</button>
             </div>
         </div>
   )
