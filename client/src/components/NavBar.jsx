@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom'
 
 export default function NavBar() {
 
+    const user = localStorage.getItem('user')
+    const objUser = JSON.parse(user)
+
     const navigate = useNavigate() 
     function toHome(){
         navigate('/home')
@@ -17,10 +20,18 @@ export default function NavBar() {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         navigate('/')
-
     }
+    function userAlert(){
+        if(user){
+            alert(`name: ${objUser.user.username}. type user: ${objUser.user.type_user}`)
+        }else{
+            navigate('/')
+        }
+    }
+
   return (
     <div className='navbar' style={{width:'100%', backgroundColor:"gray", height:'40px', display: 'flex', justifyContent: 'center', alignItems:'center', marginBottom:'30px'}}>
+        <button onClick={userAlert}>User</button>
         <button onClick={toHome} style={{margin: '10px'}}>Home</button>
         <button onClick={toadd} style={{margin: '10px'}}>Add Launcher</button>
         <button onClick={toRegister}>Register</button>

@@ -4,6 +4,6 @@ export default function PrivetIntelligence() {
     const user = localStorage.getItem('user')
     const objUser = JSON.parse(user)
   return (
-    (objUser.type_user.toLowerCase() === 'admin' || objUser.type_user.toLowerCase() === 'intelligence') ? <Outlet /> : <Navigate to='/' />
+    (user && (objUser.user.type_user.toLowerCase() === 'admin' || objUser.user.type_user.toLowerCase() === 'intelligence')) ? <Outlet /> : <Navigate to='/' />
   )
 }
