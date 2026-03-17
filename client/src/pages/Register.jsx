@@ -42,6 +42,10 @@ export default function Register() {
                 setPassword('')
                 setEmail('')
                 setUserType('')
+            }else{
+                const result = await respons.json()
+                alert(result.message)
+                setUserType('')
             }
             
         } catch(e){

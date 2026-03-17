@@ -88,6 +88,8 @@ let newId = 0
 app.post('/api/auth/register/create', tokenVerify, async (req,res)=> {
     const {username, password, email, type_user} = req.body;
     try {
+        const find = await db.collection('users').find({type_user}).toArray();
+        if(find.length > 0) return res.status(400).json({message:"The user type already exists."})
         newId += 1;
          const result = await db.collection('users').insertOne({
             id:newId,
