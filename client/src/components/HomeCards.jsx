@@ -5,10 +5,12 @@ export default function HomeCards({item}) {
 
     const addLauncher = useLauncher((state) =>state.addLauncher)
     const r = useLauncher((state) => state.launcher)
+    const removeLauncher = useLauncher((state) => state.removeLauncher)
 
     const navigate = useNavigate()
 
     function goToDetails(){
+        removeLauncher()
         addLauncher(item)
         navigate('/louncher-details')
         

@@ -73,9 +73,7 @@ app.delete('/api/launchers/:id', async (req,res) => {
         const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
         
         if(find.length > 0){
-            const result = await db.collection('Launcher').deleteOne({id: Number(id)})
-            console.log(result);
-            
+            await db.collection('Launcher').deleteOne({id: Number(id)})
             return res.status(200).json({message: "The deletion was successful."})
         } else{
             return res.status(400).json({error: "The ID was not found"})
@@ -83,6 +81,71 @@ app.delete('/api/launchers/:id', async (req,res) => {
     } catch(e){
         res.status(500).json({message:  "The server is not responding, please try later.", error: e.message})
     }
+})
+
+let newId = 0
+app.post('/api/auth/register/create', async (req,res)=> {
+    const {username, password, email, type_user} = req.body;
+    try {
+        newId += 1;
+         const result = await db.collection('Launcher').insertOne({
+            id:newId,
+            username,
+            password, 
+            email, 
+            type_user,
+            last_login: new Date().toISOString()
+         })
+         res.status(200).json({id : result.insertedId})
+    } catch(e){
+        res.status(500).json({error:e.message})
+    }
+});
+
+
+app.put('/api/auth/register/update/:id', async (req,res) => {
+    const {id} = req.params;
+    const {username, password, email, type_user} = req.body; 
+    let queries = {}
+    if(username){queries.username = username}
+    if(password){queries.password = password}
+    if(email){queries.email = email}
+    if(type_user)queries.type_user = type_user
+    try{
+        const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
+        if(find.length === 0){
+            return res.status(400).json({message: "The ID was not found"})
+        } 
+        const result = await db.collection('Launcher').updateOne(
+            {id:id},
+            {$set: queries}
+            )
+        res.status(200).json({message: "The user has been updated", 
+           Matched: result.matchedCount, Modified: result.modifiedCount
+        })
+    } catch(e){
+        res.status(500).jsom({message: e.message})
+    }
+});
+
+
+app.delete('/api/auth/register/delete/:id', async (req,res) => {
+    const {id} = req.params;
+    try{
+        const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
+        if(find.length === 0){
+            return res.status(400).json({message: "The ID was not found"})
+        }
+        await db.collection('Launcher').deleteOne({id:id})
+        res.status(200).json({message: "User deleted successfully"})
+    } catch(e){
+        res.status(500).json({message: e.message})
+    }
+});
+
+
+app.post('/api/auth/login', async (req,res) => {
+    
 })
 
 
