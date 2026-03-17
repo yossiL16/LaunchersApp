@@ -48,9 +48,6 @@ app.post('/api/launchers', tokenVerify, validationOfBody,async (req,res) => {
     const {name, rocketType, city} = req.body;
     const latitude = Number(req.body.latitude)    
     const longitude = Number(req.body.longitude)
-    
-       
-     
     try{
         count += 1
         const result = await db.collection('Launcher').insertOne({
