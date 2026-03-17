@@ -18,7 +18,7 @@ const db = await connectMongo({
 })
 
 
-app.get('/api/launchers', async (req,res) => {
+app.get('/api/launchers', tokenVerify, async (req,res) => {
     try{
         const launchers = await db.collection('Launcher').find().toArray();
         if(launchers.length === 0) return res.status(200).json({launchers: []})
@@ -31,7 +31,7 @@ app.get('/api/launchers', async (req,res) => {
 });
 
 
-app.get('/api/launchers/:id', async (req,res) => {
+app.get('/api/launchers/:id', tokenVerify, async (req,res) => {
     const {id} = req.params;
     try {
         const launcher = await db.collection('Launcher').find({id : Number(id)}).toArray()
@@ -44,7 +44,7 @@ app.get('/api/launchers/:id', async (req,res) => {
 })
 
 let count = 0
-app.post('/api/launchers', validationOfBody,async (req,res) => {
+app.post('/api/launchers', tokenVerify, validationOfBody,async (req,res) => {
     const {name, rocketType, city} = req.body;
     const latitude = Number(req.body.latitude)    
     const longitude = Number(req.body.longitude)
@@ -68,7 +68,7 @@ app.post('/api/launchers', validationOfBody,async (req,res) => {
 })
 
 
-app.delete('/api/launchers/:id', async (req,res) => {
+app.delete('/api/launchers/:id', tokenVerify, async (req,res) => {
     const {id} = req.params;
     try{
         const find = await db.collection('Launcher').find({id : Number(id)}).toArray();
@@ -85,7 +85,7 @@ app.delete('/api/launchers/:id', async (req,res) => {
 })
 
 let newId = 0
-app.post('/api/auth/register/create', async (req,res)=> {
+app.post('/api/auth/register/create', tokenVerify, async (req,res)=> {
     const {username, password, email, type_user} = req.body;
     try {
         newId += 1;
@@ -104,7 +104,7 @@ app.post('/api/auth/register/create', async (req,res)=> {
 });
 
 
-app.put('/api/auth/register/update/:id', async (req,res) => {
+app.put('/api/auth/register/update/:id',tokenVerify,  async (req,res) => {
     const {id} = req.params;
     const {username, password, email, type_user} = req.body; 
     let queries = {}
@@ -130,7 +130,7 @@ app.put('/api/auth/register/update/:id', async (req,res) => {
 });
 
 
-app.delete('/api/auth/register/delete/:id', async (req,res) => {
+app.delete('/api/auth/register/delete/:id',tokenVerify, async (req,res) => {
     const {id} = req.params;
     try{
         const find = await db.collection('users').find({id : Number(id)}).toArray();
@@ -158,21 +158,19 @@ app.post('/api/auth/login', async (req,res) => {
         const find2 = await db.collection('users').find({username,password }).toArray();
         const user = find2[0]
         const token = createToken(user)
-        res.status(200).json({message:'Login successful.',
-            token, user
-        })
+        res.status(200).json({message:'Login successful.',token})
     } catch(e){
         res.status(500).json({message:e.message})
     }
 })
 
 
-app.get('/api/auth/getUser', async (req,res) => {
+app.get('/api/auth/getUser',tokenVerify, async (req,res) => {
     const user = req.user
-    res.status(200).json({user})
+    res.status(200).json(user)
 })
 
-app.get('/api/users', async (req,res) => {
+app.get('/api/users',tokenVerify, async (req,res) => {
     try{
         const users = await db.collection('users').find().toArray();
         if(users.length === 0) return res.status(200).json({users: []})

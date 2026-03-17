@@ -5,7 +5,7 @@ export default function NavBar() {
 
     const navigate = useNavigate() 
     function toHome(){
-        navigate('/')
+        navigate('/home')
     }
     function toadd(){
         navigate('/Add-Launcher')

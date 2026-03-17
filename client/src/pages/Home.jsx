@@ -10,10 +10,16 @@ export default function Home() {
     const [city, setCity] = useState('')
     const [rocketType, setRocketType] = useState('')
     
+    const token = localStorage.getItem('token')
+    
 
     async function getData(){
         try {
-            const respons = await fetch('http://localhost:3000/api/launchers');
+            const respons = await fetch('http://localhost:3000/api/launchers',{
+                headers:{
+                    authorization: 'Bearer ' + token
+                }
+            });
             if(!respons.ok) {
                 alert("There is a problem with the server", respons.status)
             }

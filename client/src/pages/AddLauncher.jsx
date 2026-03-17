@@ -9,6 +9,8 @@ export default function AddLauncher() {
     const [longitude, setLongitude] = useState('')
     const [city, setCity] = useState('')
 
+    const token = localStorage.getItem('token')
+
     async function appendLauncher(){
 
         try{
@@ -16,6 +18,7 @@ export default function AddLauncher() {
                 method: 'post',
                 headers: {
                     "Content-type": "application/json",
+                    authorization: 'Bearer ' + token,
                 },
                 body: JSON.stringify({
                     city,
