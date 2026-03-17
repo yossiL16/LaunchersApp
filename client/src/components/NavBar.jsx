@@ -32,9 +32,9 @@ export default function NavBar() {
   return (
     <div className='navbar' style={{width:'100%', backgroundColor:"gray", height:'40px', display: 'flex', justifyContent: 'center', alignItems:'center', marginBottom:'30px'}}>
         <button onClick={userAlert}>User</button>
-        <button onClick={toHome} style={{margin: '10px'}}>Home</button>
-        <button onClick={toadd} style={{margin: '10px'}}>Add Launcher</button>
-        <button onClick={toRegister}>Register</button>
+        {user && <button onClick={toHome} style={{margin: '10px'}}>Home</button>}
+        {(objUser.user.type_user.toLowerCase() === "admin" || objUser.user.type_user.toLowerCase() === 'intelligence') && <button onClick={toadd} style={{margin: '10px'}}>Add Launcher</button>}
+       {objUser.user.type_user.toLowerCase() === "admin" && <button onClick={toRegister}>Register</button>}
         {localStorage.getItem('user') && <button onClick={toLogOut}>Log Out</button>}
     </div>
   )
